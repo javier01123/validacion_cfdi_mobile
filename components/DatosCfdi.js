@@ -14,6 +14,11 @@ const DatosCfdi = (props) => {
         <Text>Qr Text</Text>
         <Input value={props.qr} />
       </View>
+
+      <View>
+        <Text>Resultado</Text>
+        <Input value={props.resultado} />
+      </View>
       <View>
         <Text>UUID</Text>
         <Input Text="UUID" placeholder="UUID" value={props.uuid} />

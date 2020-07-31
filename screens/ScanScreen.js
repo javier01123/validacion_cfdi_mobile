@@ -15,7 +15,7 @@ const ScanScreen = (props) => {
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     //TODO: validar que es el formato de CFDI 3.3
     props.handleScanned(data);
   };

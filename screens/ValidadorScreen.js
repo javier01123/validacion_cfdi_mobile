@@ -9,15 +9,19 @@ import wsValidacionSat from "../services/wsValidacionSat";
 const ValidadorScreen = (props) => {
   const [datosCfdi, setDatosCfdi] = useState();
   const [showScanner, setShowScanner] = useState();
+  const [resultado, setResultado] = useState();
 
   const handleScanned = (qrText) => {
     setDatosCfdi({ ...datosCfdi, qr: qrText });
     setShowScanner(false);
+    wsValidacionSat.validate(qrText).then((response) => {
+      setResultado(response);
+      console.log("resutado set");
+    });
   };
 
-  const handleShowScanner = (e) => {
-    // setShowScanner(true);
-    wsValidacionSat.validate();
+  const handleShowScanner = (qrText) => {
+    setShowScanner(true);
   };
 
   const scanner = <ScanScreen handleScanned={handleScanned} />;
@@ -32,7 +36,7 @@ const ValidadorScreen = (props) => {
       {datosCfdi == null ? (
         <Text>En Espera de lectura</Text>
       ) : (
-        <DatosCfdi {...datosCfdi} />
+        <DatosCfdi {...datosCfdi} resultado={resultado} />
       )}
     </View>
   );
