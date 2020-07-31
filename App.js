@@ -3,14 +3,8 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import AppNavigator from "./navigation/AppNavigation";
 
-
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <AppNavigator style={styles}></AppNavigator>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <AppNavigator style={styles}></AppNavigator>;
 }
 
 const styles = StyleSheet.create({
