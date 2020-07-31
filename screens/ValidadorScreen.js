@@ -14,9 +14,12 @@ const ValidadorScreen = (props) => {
   const handleScanned = (qrText) => {
     setDatosCfdi({ ...datosCfdi, qr: qrText });
     setShowScanner(false);
+
+    const validando = true;
+    //TODO: poner loading screen
+
     wsValidacionSat.validate(qrText).then((response) => {
-      setResultado(response);
-      console.log("resutado set");
+      setResultado(response.codigoEstatus);
     });
   };
 

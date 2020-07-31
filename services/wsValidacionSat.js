@@ -31,13 +31,13 @@ const wsValidacionSat = {
     xmlhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
     xmlhttp.setRequestHeader("Access-Control-Allow-Methods", "*");
 
-    // let qr_text =
-    //   "?re=MSE021121F22&rr=CLE140212H17&tt=9280.000000&id=7EFE7AE4-78F9-49A5-8A68-5E765B5842A5";
-
     const length = qr_text.length;
     const index = qr_text.indexOf("?re=");
     const lengthToSubstract = length - index;
-    const wsData = qr_text.substr(0, lengthToSubstract);
+    let wsData = qr_text.substr(0, lengthToSubstract);
+
+    wsData =
+      "?re=MSE021121F22&rr=CLE140212H17&tt=9280.000000&id=7EFE7AE4-78F9-49A5-8A68-5E765B5842A4";
 
     let body =
       '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">' +
@@ -54,23 +54,65 @@ const wsValidacionSat = {
 
     console.log("about to send " + body);
 
-    // <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><ConsultaResponse xmlns="http://tempuri.org/">
-    // <ConsultaResult xmlns:a="http://schemas.datacontract.org/2004/07/Sat.Cfdi.Negocio.ConsultaCfdi.Servicio" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-    // <a:CodigoEstatus>S - Comprobante obtenido satisfactoriamente.</a:CodigoEstatus>
-    // <a:EsCancelable>Cancelable sin aceptación</a:EsCancelable><a:Estado>Vigente</a:Estado>
-    // <a:EstatusCancelacion/></ConsultaResult></ConsultaResponse></s:Body></s:Envelope>
-
     return new Promise((resolve, reject) => {
-      xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == 4) {
-          console.log(xmlhttp.responseText);
-          resolve(xmlhttp.responseText);
-        }
-      };
+      try {
+        xmlhttp.onreadystatechange = function () {
+          if (xmlhttp.readyState == 4) {
+            console.log(xmlhttp.responseText);
+            resolve(responseReader(xmlhttp.responseText));
+          }
+        };
 
-      xmlhttp.send(body);
+        xmlhttp.send(body);
+      } catch (ex) {
+        reject(ex);
+      }
     });
   },
 };
 
 export default wsValidacionSat;
+
+const responseReader = (soapResponse) => {
+  const regexCodigoEstatus = /<a:CodigoEstatus>.*<\/a:CodigoEstatus>/g;
+  const regexEsCancelable = /<a:EsCancelable>.*<\/a:EsCancelable>/g;
+  const regexEstado = /<a:Estado>.*<\/a:Estado>/g;
+  const regexEstatusCancelacion = /<a:EstatusCancelacion>.*<\/a:EstatusCancelacion>/g;
+
+  let codigoEstatus = soapResponse.toString().match(regexCodigoEstatus);
+  let esCancelable = soapResponse.match(regexEsCancelable);
+  let estado = soapResponse.match(regexEstado);
+  let estatusCancelacion = soapResponse.match(regexEstatusCancelacion);
+
+  if (!estatusCancelacion) estatusCancelacion = "";
+  if (!esCancelable) esCancelable = "";
+  if (!estado) estado = "";
+  if (!estatusCancelacion) estatusCancelacion = "";
+
+  codigoEstatus = codigoEstatus
+    .toString()
+    .replace("<a:CodigoEstatus>", "")
+    .replace("</a:CodigoEstatus>", "");
+
+  esCancelable = esCancelable
+    .toString()
+    .replace("<a:EsCancelable>", "")
+    .replace("</a:EsCancelable>", "");
+
+  estado = estado
+    .toString()
+    .replace("<a:Estado>", "")
+    .replace("</a:Estado>", "");
+
+  estatusCancelacion = estatusCancelacion
+    .toString()
+    .replace("<a:EstatusCancelacion>", "")
+    .replace("</a:EstatusCancelacion>", "");
+
+  return {
+    codigoEstatus: codigoEstatus,
+    esCancelable: esCancelable,
+    estado: estado,
+    estatusCancelacion,
+  };
+};

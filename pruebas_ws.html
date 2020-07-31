@@ -12,70 +12,48 @@
   document.addEventListener("DOMContentLoaded", function (event) {
     console.log("loaded");
 
-    // headers = { 'Content-type': 'text/xml;charset="utf-8"',
-    //         'Accept': 'text/xml',
-    //         'SOAPAction': 'http://tempuri.org/IConsultaCFDIService/Consulta',
-    //         'cache-control': 'no-cache',
-    //         'Host': 'consultaqr.facturaelectronica.sat.gob.mx'
-    // }
+    const paragraph =
+      '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><ConsultaResponse xmlns="http://tempuri.org/">' +
+      '<ConsultaResult xmlns:a="http://schemas.datacontract.org/2004/07/Sat.Cfdi.Negocio.ConsultaCfdi.Servicio" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">' +
+      "<a:CodigoEstatus>S - Comprobante obtenido satisfactoriamente.</a:CodigoEstatus>" +
+      "<a:EsCancelable>Cancelable sin aceptación</a:EsCancelable><a:Estado>Vigente</a:Estado>" +
+      "<a:EstatusCancelacion/></ConsultaResult></ConsultaResponse></s:Body></s:Envelope>";
 
-    const url =
-      "https://consultaqr.facturaelectronica.sat.gob.mx/consultacfdiservice.svc";
+    const regexCodigoEstatus = /<a:CodigoEstatus>.*<\/a:CodigoEstatus>/g;
+    const regexEsCancelable = /<a:EsCancelable>.*<\/a:EsCancelable>/g;
+    const regexEstado = /<a:Estado>.*<\/a:Estado>/g;
+    const regexEstatusCancelacion = /<a:EstatusCancelacion>.*<\/a:EstatusCancelacion>/g;
 
-    //   wsdl_url =
-    //   "https://consultaqr.facturaelectronica.sat.gob.mx/consultacfdiservice.svc";
+    let codigoEstatus = paragraph.toString().match(regexCodigoEstatus);
+    let esCancelable = paragraph.match(regexEsCancelable);
+    let estado = paragraph.match(regexEstado);
+    let estatusCancelacion = paragraph.match(regexEstatusCancelacion);
 
-    let headers = new Headers();
-    headers.append("Content-Type", 'text/xml;charset="utf-8"');
-    headers.append("Accept", "text/xml");
-    headers.append(
-      "SOAPAction",
-      "http://tempuri.org/IConsultaCFDIService/Consulta"
-    );
-    headers.append("Origin", "consultaqr.facturaelectronica.sat.gob.mx");
-    headers.append("Host", "consultaqr.facturaelectronica.sat.gob.mx");
-    headers.append("cache-control", "no-cache");
+    if (!estatusCancelacion) estatusCancelacion = "";
 
-    headers.append("Access-Control-Allow-Origin", "*");
-    headers.append("Access-Control-Allow-Methods", "*");
+    codigoEstatus = codigoEstatus
+      .toString()
+      .replace("<a:CodigoEstatus>", "")
+      .replace("</a:CodigoEstatus>", "");
 
-    // total = float(total)
-    // formated_total = '{:0>17.6f}'.format(total)
-    // rfc_emisor = rfc_emisor.upper()
-    // rfc_receptor = rfc_receptor
-    // uuid = uuid
+    esCancelable = esCancelable
+      .toString()
+      .replace("<a:EsCancelable>", "")
+      .replace("</a:EsCancelable>", "");
 
-    // qr_text = "?re={}&rr={}&tt={}&id={}".format(rfc_emisor, rfc_receptor, formated_total, uuid)
+    estado = estado
+      .toString()
+      .replace("<a:Estado>", "")
+      .replace("</a:Estado>", "");
 
-    qr_text =
-      "?re=MSE021121F22&rr=CLE140212H17&tt=9280.000000&id=7EFE7AE4-78F9-49A5-8A68-5E765B5842A5";
+    estatusCancelacion = estatusCancelacion
+      .toString()
+      .replace("<a:EstatusCancelacion>", "")
+      .replace("</a:EstatusCancelacion>", "");
 
-    let body =
-      '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">' +
-      "<soapenv:Header/>" +
-      "<soapenv:Body>" +
-      "<tem:Consulta>" +
-      "<!--Optional:-->" +
-      "<tem:expresionImpresa><![CDATA[{{DATOS}}]]></tem:expresionImpresa>" +
-      "</tem:Consulta>" +
-      "</soapenv:Body>" +
-      "</soapenv:Envelope>";
-
-    body = body.replace("{{DATOS}}", qr_text);
-
-    console.log("about to send " + body);
-
-    fetch(url, {
-      body: body,
-      method: "POST",
-      mode: "cors",
-      headers: headers,
-      credentials: "include",
-    })
-      .then((response) => console.log(response))
-      .catch(function (error) {
-        console.log(error);
-      });
-    //.done();
+    console.log({ codigoEstatus });
+    console.log({ esCancelable });
+    console.log({ estado });
+    console.log({ estatusCancelacion });
   });
 </script>
