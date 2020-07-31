@@ -4,6 +4,7 @@ import { Text, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import DatosCfdi from "../components/DatosCfdi";
 import ScanScreen from "./ScanScreen";
+import wsValidacionSat from "../services/wsValidacionSat";
 
 const ValidadorScreen = (props) => {
   const [datosCfdi, setDatosCfdi] = useState();
@@ -14,12 +15,9 @@ const ValidadorScreen = (props) => {
     setShowScanner(false);
   };
 
-  // hacer 3 pantallas
-  // inicio, scanning , result;
-
   const handleShowScanner = (e) => {
-    console.log("clicked");
-    setShowScanner(true);
+    // setShowScanner(true);
+    wsValidacionSat.validate();
   };
 
   const scanner = <ScanScreen handleScanned={handleScanned} />;

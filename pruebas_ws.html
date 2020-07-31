@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+</html>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) {
+    console.log("loaded");
+
+    // headers = { 'Content-type': 'text/xml;charset="utf-8"',
+    //         'Accept': 'text/xml',
+    //         'SOAPAction': 'http://tempuri.org/IConsultaCFDIService/Consulta',
+    //         'cache-control': 'no-cache',
+    //         'Host': 'consultaqr.facturaelectronica.sat.gob.mx'
+    // }
+
+    const url =
+      "https://consultaqr.facturaelectronica.sat.gob.mx/consultacfdiservice.svc";
+
+    //   wsdl_url =
+    //   "https://consultaqr.facturaelectronica.sat.gob.mx/consultacfdiservice.svc";
+
+    let headers = new Headers();
+    headers.append("Content-Type", 'text/xml;charset="utf-8"');
+    headers.append("Accept", "text/xml");
+    headers.append(
+      "SOAPAction",
+      "http://tempuri.org/IConsultaCFDIService/Consulta"
+    );
+    headers.append("Origin", "consultaqr.facturaelectronica.sat.gob.mx");
+    headers.append("Host", "consultaqr.facturaelectronica.sat.gob.mx");
+    headers.append("cache-control", "no-cache");
+
+    headers.append("Access-Control-Allow-Origin", "*");
+    headers.append("Access-Control-Allow-Methods", "*");
+
+    // total = float(total)
+    // formated_total = '{:0>17.6f}'.format(total)
+    // rfc_emisor = rfc_emisor.upper()
+    // rfc_receptor = rfc_receptor
+    // uuid = uuid
+
+    // qr_text = "?re={}&rr={}&tt={}&id={}".format(rfc_emisor, rfc_receptor, formated_total, uuid)
+
+    qr_text =
+      "?re=MSE021121F22&rr=CLE140212H17&tt=9280.000000&id=7EFE7AE4-78F9-49A5-8A68-5E765B5842A5";
+
+    let body =
+      '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">' +
+      "<soapenv:Header/>" +
+      "<soapenv:Body>" +
+      "<tem:Consulta>" +
+      "<!--Optional:-->" +
+      "<tem:expresionImpresa><![CDATA[{{DATOS}}]]></tem:expresionImpresa>" +
+      "</tem:Consulta>" +
+      "</soapenv:Body>" +
+      "</soapenv:Envelope>";
+
+    body = body.replace("{{DATOS}}", qr_text);
+
+    console.log("about to send " + body);
+
+    fetch(url, {
+      body: body,
+      method: "POST",
+      mode: "cors",
+      headers: headers,
+      credentials: "include",
+    })
+      .then((response) => console.log(response))
+      .catch(function (error) {
+        console.log(error);
+      });
+    //.done();
+  });
+</script>
