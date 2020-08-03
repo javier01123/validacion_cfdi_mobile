@@ -9,23 +9,51 @@ import { Input, Text } from "react-native-elements";
 
 const DatosCfdi = (props) => {
   return (
-    <View>
+    <View style={styles.container}>
       <View>
-        <Text>Qr Text</Text>
-        <Input value={props.qr} />
+        <View style={{ flexDirection: "row", marginBottom: 15 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.label}>Emisor</Text>
+            <Text>{props.rfcEmisor}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.label}>Receptor</Text>
+            <Text>{props.rfcReceptor}</Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Total</Text>
+          <Text>{props.total}</Text>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>UUID</Text>
+          <Text>{props.uuid}</Text>
+        </View>
       </View>
 
-      <View>
-        <Text>Resultado</Text>
-        <Input value={props.resultado} />
-      </View>
-      <View>
-        <Text>UUID</Text>
-        <Input Text="UUID" placeholder="UUID" value={props.uuid} />
-      </View>
-      <View>
-        <Text>Total</Text>
-        <Input placeholder="Total" value={props.total} />
+      <View style={{ marginTop: 20 }}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Respuesta SAT</Text>
+          <Text>{props.resultado.codigoEstatus} </Text>
+        </View>
+
+        <View style={{ flexDirection: "row", marginBottom: 15 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.label}>Estado</Text>
+            <Text>{props.resultado.estado}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.label}>Es Cancelable</Text>
+            <Text>{props.resultado.esCancelable} </Text>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Estatus Cancelación</Text>
+          <Text>{props.resultado.estatusCancelacion} </Text>
+        </View>
       </View>
     </View>
   );
@@ -33,4 +61,14 @@ const DatosCfdi = (props) => {
 
 export default DatosCfdi;
 
-const style = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+  row: {
+    marginBottom: 15,
+  },
+  label: {
+    fontWeight: "bold",
+  },
+});

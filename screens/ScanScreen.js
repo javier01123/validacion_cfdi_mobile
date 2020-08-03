@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Dimensions } from "react-native";
 
 import { BarCodeScanner, getPermissionsAsync } from "expo-barcode-scanner";
 
-const ScanScreen = (props) => {
+const ScanScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = React.useState(false);
 
   const getPermissionsAsync = async () => {
@@ -15,9 +15,7 @@ const ScanScreen = (props) => {
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
-    //alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    //TODO: validar que es el formato de CFDI 3.3
-    props.handleScanned(data);
+    navigation.navigate("Resultado", { qrData: data });
   };
 
   React.useEffect(() => {
@@ -26,7 +24,7 @@ const ScanScreen = (props) => {
 
   //TODO:debo manejar cuando se negó el permiso
 
-  const requestPermisionView = <Text>Solicitando permiso para la camara</Text>;
+  const requestPermisionView = <Text>Cargando...</Text>;
 
   const scannerView = (
     <View style={styles.container}>
