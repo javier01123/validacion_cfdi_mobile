@@ -50,13 +50,13 @@ const wsValidacionSat = {
 
     body = body.replace("{{DATOS}}", wsData);
 
-    console.log("about to send " + body);
+    // console.log("about to send " + body);
 
     return new Promise((resolve, reject) => {
       try {
         xmlhttp.onreadystatechange = function () {
           if (xmlhttp.readyState == 4) {
-            console.log(xmlhttp.responseText);
+            // console.log(xmlhttp.responseText);
             resolve(wsResponseParser(xmlhttp.responseText));
           }
         };

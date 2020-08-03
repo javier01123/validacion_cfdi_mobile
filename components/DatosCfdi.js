@@ -1,16 +1,34 @@
 import React from "react";
+import { Input, Text } from "react-native-elements";
+import Icon from "react-native-vector-icons/FontAwesome";
 import {
   View,
   ImagePropTypes,
   StyleSheet,
   TextInputComponent,
 } from "react-native";
-import { Input, Text } from "react-native-elements";
 
 const DatosCfdi = (props) => {
+  let estadoIcon = (
+    <Icon name="warning" size={20} style={{ marginLeft: 10 }} color="red" />
+  );
+
+  if (props.resultado.estado == "Vigente") {
+    estadoIcon = (
+      <Icon
+        name="check-circle"
+        size={20}
+        style={{ marginLeft: 20 }}
+        color="green"
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.section}>
+        <Text style={{ backgroundColor: "lightgreen" }}>Datos del CFDI</Text>
+
         <View style={{ flexDirection: "row", marginBottom: 15 }}>
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Emisor</Text>
@@ -33,7 +51,10 @@ const DatosCfdi = (props) => {
         </View>
       </View>
 
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.section}>
+        <Text style={{ backgroundColor: "lightgreen" }}>
+          Resultado de la validación
+        </Text>
         <View style={styles.row}>
           <Text style={styles.label}>Respuesta SAT</Text>
           <Text>{props.resultado.codigoEstatus} </Text>
@@ -42,7 +63,10 @@ const DatosCfdi = (props) => {
         <View style={{ flexDirection: "row", marginBottom: 15 }}>
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Estado</Text>
-            <Text>{props.resultado.estado}</Text>
+            <Text>
+              {props.resultado.estado}
+              {estadoIcon}
+            </Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.label}>Es Cancelable</Text>
@@ -70,5 +94,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: "bold",
+  },
+  section: {
+    marginBottom: 20,
   },
 });

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Text, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import wsValidacionSat from "../services/wsValidacionSat";
@@ -21,3 +21,9 @@ const ValidadorScreen = ({ navigation }) => {
 };
 
 export default ValidadorScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    alignContent: "center",
+  },
+});

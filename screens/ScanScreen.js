@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Dimensions } from "react-native";
+import qrParser from "../utilities/qrParser";
 
 import { BarCodeScanner, getPermissionsAsync } from "expo-barcode-scanner";
 
@@ -15,6 +16,13 @@ const ScanScreen = ({ navigation }) => {
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
+    let datosCfdi = qrParser(data);
+
+    if (!datosCfdi.uuid) {
+      Alert.alert("QR inválido, verifique que es un CFDI 3.3");
+      return;
+    }
+
     navigation.navigate("Resultado", { qrData: data });
   };
 

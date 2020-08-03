@@ -34,6 +34,8 @@ const wsResponseParser = (soapResponse) => {
     .replace("<a:EstatusCancelacion>", "")
     .replace("</a:EstatusCancelacion>", "");
 
+  estatusCancelacion = estatusCancelacion || "NA";
+
   return {
     codigoEstatus,
     esCancelable,

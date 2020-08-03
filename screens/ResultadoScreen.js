@@ -12,16 +12,7 @@ const ResultadoScreen = ({ route, navigation }) => {
   const { qrData } = route.params;
 
   const load = () => {
-    let datosCfdi = qrParser(qrData);
-
-    console.log(datosCfdi);
-
-    setCfdiData(datosCfdi);
-
-    if (!datosCfdi.uuid) {
-      Alert.alert("QR inválido");
-      return;
-    }
+    setCfdiData(qrParser(qrData));
 
     wsValidacionSat
       .validate(qrData)
@@ -30,7 +21,7 @@ const ResultadoScreen = ({ route, navigation }) => {
       })
       .catch((err) => {
         console.log(err);
-        alert("error");
+        alert("error, intente de nuevo");
       });
   };
 
