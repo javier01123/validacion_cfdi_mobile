@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
@@ -8,36 +8,49 @@ import qrParser from "../utilities/qrParser";
 import { BarCodeScanner, getPermissionsAsync } from "expo-barcode-scanner";
 
 const ScanScreen = ({ navigation }) => {
-  const [hasCameraPermission, setHasCameraPermission] = React.useState(false);
+  const [hasCameraPermission, setHasCameraPermission] = useState(false);
+  // const [handleBarCodeScanned, setHandleBarCodeScanned] = useState();
+  const [scanned, setScanned] = useState(false);
 
   const getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     setHasCameraPermission(status === "granted");
   };
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    let datosCfdi = qrParser(data);
+  const onScanned = ({ type, data }) => {
+    setScanned(true);
 
-    if (!datosCfdi.uuid) {
-      Alert.alert("QR inválido, verifique que es un CFDI 3.3");
-      return;
+    try {
+      let datosCfdi = qrParser(data);
+
+      if (!datosCfdi.uuid) {
+        Alert.alert("QR", "QR inválido, verifique que es un CFDI 3.3", [
+          {
+            text: "OK",
+            onPress: () => {
+              setScanned(false);
+            },
+          },
+        ]);
+        return;
+      }
+
+      navigation.navigate("Resultado", { qrData: data });
+    } finally {
+      // setScanned(false);
     }
-
-    navigation.navigate("Resultado", { qrData: data });
   };
 
-  React.useEffect(() => {
-    getPermissionsAsync(), [];
-  });
+  React.useEffect(() => getPermissionsAsync(), []);
 
-  //TODO:debo manejar cuando se negó el permiso
-
-  const requestPermisionView = <Text>Cargando...</Text>;
+  const requestPermisionView = (
+    <Text>Solicitando permisos para la cámara...</Text>
+  );
 
   const scannerView = (
     <View style={styles.container}>
       <BarCodeScanner
-        onBarCodeScanned={handleBarCodeScanned}
+        onBarCodeScanned={scanned ? undefined : onScanned}
         style={StyleSheet.absoluteFillObject}
       />
     </View>
