@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, Button, Alert } from "react-native";
+import { View, StyleSheet, Button, Alert } from "react-native";
+import { Text } from "react-native-elements";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Dimensions } from "react-native";
@@ -8,8 +9,7 @@ import qrParser from "../utilities/qrParser";
 import { BarCodeScanner, getPermissionsAsync } from "expo-barcode-scanner";
 
 const ScanScreen = ({ navigation }) => {
-  const [hasCameraPermission, setHasCameraPermission] = useState(false);
-  // const [handleBarCodeScanned, setHandleBarCodeScanned] = useState();
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
   const getPermissionsAsync = async () => {
@@ -20,31 +20,37 @@ const ScanScreen = ({ navigation }) => {
   const onScanned = ({ type, data }) => {
     setScanned(true);
 
-    try {
-      let datosCfdi = qrParser(data);
+    let datosCfdi = qrParser(data);
 
-      if (!datosCfdi.uuid) {
-        Alert.alert("QR", "QR inválido, verifique que es un CFDI 3.3", [
-          {
-            text: "OK",
-            onPress: () => {
-              setScanned(false);
-            },
+    if (!datosCfdi.uuid) {
+      Alert.alert("QR", "QR inválido, verifique que es un CFDI 3.3", [
+        {
+          text: "OK",
+          onPress: () => {
+            setScanned(false);
           },
-        ]);
-        return;
-      }
-
-      navigation.navigate("Resultado", { qrData: data });
-    } finally {
-      // setScanned(false);
+        },
+      ]);
+      return;
     }
+
+    navigation.navigate("Resultado", { qrData: data });
   };
 
-  React.useEffect(() => getPermissionsAsync(), []);
+  React.useEffect(() => {
+    getPermissionsAsync();
+  }, []);
 
   const requestPermisionView = (
-    <Text>Solicitando permisos para la cámara...</Text>
+    <View style={styles.message}>
+      <Text h1>Solicitando permisos para la cámara...</Text>
+    </View>
+  );
+
+  const deniedPermisionView = (
+    <View style={styles.message}>
+      <Text h1>No se autorizó el acceso a la camara.</Text>
+    </View>
   );
 
   const scannerView = (
@@ -58,7 +64,11 @@ const ScanScreen = ({ navigation }) => {
 
   return (
     <React.Fragment>
-      {hasCameraPermission === false ? requestPermisionView : scannerView}
+      {hasCameraPermission === true
+        ? scannerView
+        : hasCameraPermission == false
+        ? deniedPermisionView
+        : requestPermisionView}
     </React.Fragment>
   );
 };
@@ -70,5 +80,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-end",
+  },
+  message: {
+    padding: 20,
   },
 });
