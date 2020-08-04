@@ -10,11 +10,12 @@ const ValidadorScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Button
+        style={styles.button}
         title=" Escanear código QR"
         onPress={handleShowScanner}
-        icon={<Icon name="camera" size={15} color="white" />}
+        icon={<Icon name="camera" size={30} color="white" />}
       />
     </View>
   );
@@ -24,6 +25,10 @@ export default ValidadorScreen;
 
 const styles = StyleSheet.create({
   container: {
-    alignContent: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "pink",
+    flex: 1,
   },
+  button: {},
 });
