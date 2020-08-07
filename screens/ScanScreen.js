@@ -5,12 +5,14 @@ import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Dimensions } from "react-native";
 import qrParser from "../utilities/qrParser";
+import { useIsFocused } from "@react-navigation/native";
 
 import { BarCodeScanner, getPermissionsAsync } from "expo-barcode-scanner";
 
 const ScanScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const isFocused = useIsFocused();
 
   const getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
@@ -37,19 +39,22 @@ const ScanScreen = ({ navigation }) => {
     navigation.navigate("Resultado", { qrData: data });
   };
 
+
   React.useEffect(() => {
     getPermissionsAsync();
-  }, []);
+    setScanned(false);
+    console.log("LOADED");
+  }, [isFocused]);
 
   const requestPermisionView = (
     <View style={styles.message}>
-      <Text h1>Solicitando permisos para la cámara...</Text>
+      <Text h3>Solicitando permisos para la cámara...</Text>
     </View>
   );
 
   const deniedPermisionView = (
     <View style={styles.message}>
-      <Text h1>No se autorizó el acceso a la camara.</Text>
+      <Text h3>No se autorizó el acceso a la camara.</Text>
     </View>
   );
 
